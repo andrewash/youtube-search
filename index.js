@@ -1,3 +1,4 @@
+// AA modified so it gets full video description of each search result
 var querystring = require('querystring')
 var axios = require('axios')
 
@@ -90,22 +91,33 @@ module.exports = function search (term, opts, cb) {
             break
         }
 
-        return {
+        var videoParams = {
           id: id,
-          link: link,
-          kind: item.id.kind,
-          publishedAt: item.snippet.publishedAt,
-          channelId: item.snippet.channelId,
-          channelTitle: item.snippet.channelTitle,
-          title: item.snippet.title,
-          description: item.snippet.description,
-          thumbnails: item.snippet.thumbnails
-        }
+          part: 'snippet',
+          key: params['key']
+        };
+        axios.get('https://www.googleapis.com/youtube/v3/videos?' + querystring.stringify(videoParams))
+          .then(function (response) {
+            return {
+              id: id,
+              link: link,
+              kind: item.id.kind,
+              publishedAt: item.snippet.publishedAt,
+              channelId: item.snippet.channelId,
+              channelTitle: item.snippet.channelTitle,
+              title: item.snippet.title,
+              description: item.snippet.description,
+              fullDescription: response.data.items[0].snippet.description,
+              thumbnails: item.snippet.thumbnails
+            }            
+          })
+          .catch(function (err) {
+            return cb(err)
+          })        
       })
-
-      return cb(null, findings, pageInfo)
     })
     .catch(function (err) {
       return cb(err)
     })
+    return cb(null, findings, pageInfo)    
 }
