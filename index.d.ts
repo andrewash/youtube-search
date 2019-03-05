@@ -57,6 +57,7 @@ declare namespace search {
     channelId: string;
     title: string;
     description: string;
+    fullDescription: string;
     thumbnails: YouTubeSearchResultThumbnails;
   }
 
