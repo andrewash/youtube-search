@@ -115,9 +115,9 @@ module.exports = function search (term, opts, cb) {
             return cb(err)
           })        
       })
+      return cb(null, findings, pageInfo)            
     })
     .catch(function (err) {
       return cb(err)
-    })
-    return cb(null, findings, pageInfo)    
+    })    
 }
